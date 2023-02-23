@@ -148,31 +148,32 @@ m2e 2不需要
 第一步：在POM文件中加入jmh的依赖信息：
 
 
-   <dependencies>
 
-   <dependency>
+      <dependencies>
 
-   <groupId>org.openjdk.jmh</groupId>
+      <dependency>
 
-   <artifactId>jmh-core</artifactId>
+      <groupId>org.openjdk.jmh</groupId>
 
-   <version>${jmh.version}</version>
+      <artifactId>jmh-core</artifactId>
 
-   </dependency>
+      <version>${jmh.version}</version>
 
-   <dependency>
+      </dependency>
 
-   <groupId>org.openjdk.jmh</groupId>
+      <dependency>
 
-   <artifactId>jmh-generator-annprocess</artifactId>
+      <groupId>org.openjdk.jmh</groupId>
 
-   <version>${jmh.version}</version>
+      <artifactId>jmh-generator-annprocess</artifactId>
 
-   <scope>provided</scope>
+      <version>${jmh.version}</version>
 
-   </dependency>
+      <scope>provided</scope>
 
-   </dependencies>
+      </dependency>
+
+      </dependencies>
 
 
 配置依赖完成后，右键选择项目，选择Run As -> Maven install ，下载依赖包到项目中。下载完成后刷新项目，可以在Maven Dependencies下看到JMH的包。
