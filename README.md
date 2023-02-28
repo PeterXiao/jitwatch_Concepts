@@ -1,5 +1,9 @@
 # jitwatch_Concepts
 
+https://github.com/PeterXiao/jitwatch_Concepts/blob/main/README.md
+
+https://github.com/chriswhocodes/TweakVM
+
 #注意区分JDK 《=8 与JDk 》=9
 
 #公共部分：
@@ -65,8 +69,12 @@
 2.不使用插件的情况下：  也是配置运行的vm参数：
 
 
+    /usr/bin/java ‑Dfoo=bar ‑cp=/all/the/jars ‑java.library.path=/home/chris/lib ‑Xmx8g ‑XX:+UseG1GC ‑XX:MaxGCPauseMillis=100 ‑XX:+UnlockDiagnosticVMOptions ‑XX:+BADSWITCH ‑XX:+LogCompilation ‑XX:LogFile="/home/chris/hotspot.log" ‑XX:FreqInlineSize=512 ‑Xmx4g ‑XX:+TraceRangeCheckElimination ‑XX:+UnsyncloadClass ‑XX:+UseSpinning ‑XX:+PrintCodeHeapAnalytics ‑XX:ReplaySuppressInitializers=4 com.chrisnewland.someproject.SomeApplication 
 
+2.方式2  注意JDK8的日志会输出到同一个log，直接配置jitwatch的环境变量之后，导入该log即可：
 
+    -server -XX:+UnlockDiagnosticVMOptions -XX:+TraceClassLoading  -XX:+PrintAssembly -XX:+LogCompilation -XX:LogFile=live.log
+  这里就是导入 live.log
 
 
 
@@ -147,33 +155,31 @@ m2e 2不需要
 
 第一步：在POM文件中加入jmh的依赖信息：
 
-
-
-      <dependencies>
-
-      <dependency>
-
-      <groupId>org.openjdk.jmh</groupId>
-
-      <artifactId>jmh-core</artifactId>
-
-      <version>${jmh.version}</version>
-
-      </dependency>
-
-      <dependency>
-
-      <groupId>org.openjdk.jmh</groupId>
-
-      <artifactId>jmh-generator-annprocess</artifactId>
-
-      <version>${jmh.version}</version>
-
-      <scope>provided</scope>
-
-      </dependency>
-
-      </dependencies>
+    <dependencies>
+    
+    <dependency>
+    
+    <groupId>org.openjdk.jmh</groupId>
+    
+    <artifactId>jmh-core</artifactId>
+    
+    <version>${jmh.version}</version>
+    
+    </dependency>
+    
+    <dependency>
+    
+    <groupId>org.openjdk.jmh</groupId>
+    
+    <artifactId>jmh-generator-annprocess</artifactId>
+    
+    <version>${jmh.version}</version>
+    
+    <scope>provided</scope>
+    
+    </dependency>
+    
+    </dependencies>
 
 
 配置依赖完成后，右键选择项目，选择Run As -> Maven install ，下载依赖包到项目中。下载完成后刷新项目，可以在Maven Dependencies下看到JMH的包。
@@ -183,3 +189,23 @@ m2e 2不需要
 
 
 全部配置完成后，JMH的环境准备工作就全部结束了。
+
+
+
+-Xcomp -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly -XX:PrintAssemblyOptions=hsdis-print-bytes -XX:+LogCompilation -XX:LogFile=/tmp/java_compilation_log.log
+
+-Xcomp -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly -XX:PrintAssemblyOptions=hsdis-print-bytes -XX:+LogCompilation -XX:LogFile=/tmp/java_compilation_log.log
+
+注意：  +PrintAssembly 参数可用于反汇编已编译代码，但在某些 JDK 版本（例如 8）中 需要名为hsdis的插件库。在hotspot/src/share/tools/hsdis目录中，您可以找到插件代码。要构建它，请打开命令行并运行：
+
+Shell
+
+export BINUTILS=<path-to-binutils> && touch $BINUTILS/bfd/doc/bfd.info && make all64
+
+export BINUTILS=<path-to-binutils> && touch $BINUTILS/bfd/doc/bfd.info && make all64
+
+构建完成后，将build/linux-amd64/hsdis-amd64.so库复制到jre/lib/amd64 和jre/lib/amd64/server 目录。
+
+https://juejin.cn/post/7117531586232320031
+
+cat words.txt | tr -s ' ' '\n' | sort | uniq -c | sort -r | awk '{ print $2, $1 }'
